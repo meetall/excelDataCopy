@@ -1,14 +1,13 @@
 import os
 import shutil
 
-def getMonthFolder(parentDir,month):
-    path = parentDir + '\\' + month
+def getMonthFolder(parentDir,month,monthIndex):
+    path = parentDir + '\\' + str(monthIndex) +'_' + month
     return path
 
 
-def copy_rename(sourceFolder, destFolder, old_file_name, new_file_name):
-        src_file = os.path.join(sourceFolder, old_file_name)
-        dst_file = os.path.join(destFolder, new_file_name)
+def copy_rename(src_file, dst_file):
+        
         shutil.copyfile(src_file,dst_file)
 
 monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']

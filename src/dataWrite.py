@@ -6,22 +6,23 @@ import copy
 
 import dataRead
 
-dataDir = 'D:\\Chenglin_HR_Work\\01_Payroll\\01_Commission\\2018_Commission\\MNC'
+dataDir = 'D:\\Chenglin_HR_Work\\01_Payroll\\01_Commission\\2018_Commission\\2018_Commissionstatement\\'
 
-def writeFile(monthIndex, name):
+def writeFile(monthIndex, name, department):
     #get month name from index
     month = helper.monthNames[monthIndex-1]
     print("Processing data for " + name+ " for "+month)
-    templateFileName = helper.getMonthFolder(dataDir,month)+'\\2018commission_'+name+'.xlsx'
-    new_file_name = helper.getMonthFolder(dataDir,month)+'\\2018commission_'+name+'_'+month+'.xlsx'
-    helper.copy_rename(dataDir, dataDir, templateFileName, new_file_name)
+    departmentFolder = dataDir + department
+    templateFileName = departmentFolder+ '\\Template' + '\\2018commission_'+name+'.xlsx'
+    new_file_name = helper.getMonthFolder(departmentFolder,month, monthIndex)+'\\2018commission_'+name+'_'+month+'.xlsx'
+    helper.copy_rename(templateFileName, new_file_name)
 
-    wb = load_workbook(filename = new_file_name)
+    wb = load_workbook(filename = new_file_name, data_only=True)
 
     copyNsData(wb, monthIndex, name)
     fillNsNumOnSummarySheet(wb, monthIndex)
 
-    copyBRData(wb, monthIndex, name)
+    copyBRData(wb, monthIndex, name, department)
     fillBROnSummarySheet(wb, monthIndex)
     
     wb.save(new_file_name)
@@ -44,9 +45,10 @@ def fillNsNumOnSummarySheet(wb, monthIndex):
             sum = sum + ns_sheet.cell(row=row, column=27+m).value
         fillSummary(wb, sum, 12, m+1)        
 
-def copyBRData(wb, monthIndex, name):
+def copyBRData(wb, monthIndex, name, department):
     br_sheet = wb.create_sheet('BR')
-    br_data = dataRead.readBRDataForEmployee(monthIndex, name)
+    br_data = dataRead.readBRDataForEmployee(monthIndex, name, department)
+    #populate data
     for row in range(0,len(br_data)):
         for col in range(0,len(br_data[row])):
             br_sheet.cell(row=row+1,column=col+1).value = br_data[row][col].value
