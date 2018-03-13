@@ -2,7 +2,7 @@
 import names
 import helper
 from openpyxl import load_workbook
-import copy
+from copy import copy, deepcopy
 
 import dataRead
 
@@ -33,6 +33,7 @@ def copyNsData(wb, monthIndex, name):
     for row in range(0,len(ns_data)):
         for col in range(0,len(ns_data[row])):
             ns_sheet.cell(row=row+1,column=col+1).value = ns_data[row][col].value
+            copyStyle(ns_data[row][col], ns_sheet.cell(row=row+1,column=col+1))
 
 def fillNsNumOnSummarySheet(wb, monthIndex):
     ns_sheet = wb['NS']
@@ -52,6 +53,7 @@ def copyBRData(wb, monthIndex, name, department):
     for row in range(0,len(br_data)):
         for col in range(0,len(br_data[row])):
             br_sheet.cell(row=row+1,column=col+1).value = br_data[row][col].value
+            copyStyle(br_data[row][col], br_sheet.cell(row=row+1,column=col+1))
 
 def fillBROnSummarySheet(wb, monthIndex):
     br_sheet = wb['BR']
@@ -65,3 +67,12 @@ def fillBROnSummarySheet(wb, monthIndex):
 def fillSummary(wb, value, row, col):
     summary = wb['Sales Achievements Details']
     summary.cell(row=row, column=col).value=value
+
+def copyStyle(cell, new_cell):
+    if cell.has_style:
+        new_cell.font = copy(cell.font)
+        new_cell.border = copy(cell.border)
+        new_cell.fill = copy(cell.fill)
+        new_cell.number_format = copy(cell.number_format)
+        new_cell.protection = copy(cell.protection)
+        new_cell.alignment = copy(cell.alignment)
