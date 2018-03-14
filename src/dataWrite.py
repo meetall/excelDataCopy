@@ -3,6 +3,7 @@ import names
 import helper
 from openpyxl import load_workbook
 from copy import copy, deepcopy
+from datetime import datetime
 
 import dataRead
 
@@ -39,12 +40,13 @@ def fillNsNumOnSummarySheet(wb, monthIndex):
     ns_sheet = wb['NS']
     if ns_sheet.max_row == 1:
         return
-
+    
+    sum=[0]*monthIndex
+    for row in range(2, ns_sheet.max_row+1):
+        month = ns_sheet.cell(row=row, column=52).value.month
+        sum[month-1] = sum[month-1] + ns_sheet.cell(row=row, column=28).value
     for m in range(1,monthIndex+1):
-        sum=0
-        for row in range(2, ns_sheet.max_row+1):
-            sum = sum + ns_sheet.cell(row=row, column=27+m).value
-        fillSummary(wb, sum, 12, m+1)        
+        fillSummary(wb, sum[m-1], 12, m+1)        
 
 def copyBRData(wb, monthIndex, name, department):
     br_sheet = wb.create_sheet('BR')
